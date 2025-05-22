@@ -29,6 +29,7 @@
       padding: 20px;
       box-sizing: border-box;
       transition: background 0.3s;
+      position: relative;
     }
     
     @keyframes moveGradient {
@@ -87,7 +88,8 @@
       box-shadow:inset 0px 0px 8px rgba(255, 255, 255, 0.08);
       padding: 40px 28px 28px 28px;
       max-width: 500px;
-      margin: 0 auto 0 auto;
+      margin: 0 auto;
+      z-index: 2;
       position: relative;
       backdrop-filter: blur(2px);
       border:1.5px solid #0e7949;
@@ -460,6 +462,13 @@
         height: 32px;
         font-size: 1.1rem;
       }
+    }
+    .title-svg, .description, .main-content {
+      position: relative;
+      z-index: 2;
+    }
+    footer {
+      z-index: 9999 !important;
     }
    
   </style>
