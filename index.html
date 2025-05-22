@@ -21,7 +21,7 @@
     body {
       
       min-height: 100vh;
-      background: radial-gradient(ellipse at 49% 0%, #10061b 0%, #090512 80%), url('bg4.png') no-repeat center center fixed;
+      background: url('bg4.png') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
       font-family: 'MyCustomFont', Arial, sans-serif;
@@ -116,7 +116,7 @@
       display: block;
       margin-bottom: 8px;
       font-weight: 600;
-      color: #f3e8ff;
+      color: #06bead;
       letter-spacing: 0.01em;
     }
     .input-row {
@@ -139,11 +139,11 @@
       box-shadow: 0 1px 4px #0002;
     }
     .input-row input[type="text"]:focus {
-      border: 1.5px solid #c084fc;
+      border: 1.5px solid #3993ee;
     }
     .add-btn {
-      background: linear-gradient(152deg, #69c7f5 0%, #1d5291 100%);
-      color: #fff;
+      background: linear-gradient(152deg, #69c7f5 0%, #afc8e5 100%);
+      color: #232323;
       border: none;
       border-radius: 10px;
       padding: 0 18px;
@@ -155,8 +155,9 @@
       box-shadow: 0 2px 8px #c084fc33;
     }
     .add-btn:hover {
-      background: linear-gradient(90deg, #a855f7 0%, #38bdf8 100%);
-      color: #fff;
+      background: linear-gradient(152deg, #69c7f5 0%, #afc8e5 100%)
+      ;
+      color: #232323;
     }
     .url-list {
       margin-bottom: 16px;
@@ -169,8 +170,8 @@
     .url-chip {
       display: flex;
       align-items: center;
-      background: #2a2a54;
-      color: #9590e7;
+      background: #354656;
+      color: #cbecf9;
       border-radius: 10px;
       padding: 7px 12px 7px 12px;
       font-size: 1rem;
@@ -230,15 +231,16 @@
       box-shadow: 0 1px 4px #0002;
     }
     .color-row input[type="text"]:focus {
-      border: 1.5px solid #c084fc;
+      border: 1.5px solid #3993ee;
     }
     .input-group {
       margin-bottom: 28px;
     }
     .generate-btn, .copy-btn {
       width: 100%;
-      background: linear-gradient(152deg, #69c7f5 0%, #1d5291 100%);
-      color: #fff;
+      background:linear-gradient(152deg, #69c7f5 0%, #afc8e5 100%)
+      ;
+      color: #232323;
       border: none;
       border-radius: 12px;
       padding: 16px 0;
@@ -256,7 +258,8 @@
       gap: 8px;
     }
     .generate-btn:hover, .copy-btn:hover {
-      background: linear-gradient(152deg, #69c7f5 0%, #1d5291 100%);
+      background: linear-gradient(152deg, #69c7f5 0%, #afc8e5 100%)
+      );
     }
     .copy-btn.copied {
       background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
@@ -268,7 +271,7 @@
       margin-left: 4px;
     }
     .iframe-code-block {
-      background: rgba(18,12,27,0.83);;
+      background: rgba(18,12,27,0.4);;
       color: #fff;
       border-radius: 10px;
       padding: 18px;
@@ -522,9 +525,10 @@
       <button class="copy-btn" id="copy-btn">Copy HTML Code</button>
     </div>
   </div>
-  <footer style="width:100vw;display:flex;justify-content:center;align-items:center;position:fixed;bottom:0;left:0;height:80px;background:rgba(0,0,0,0.7);z-index:9999;cursor:pointer;box-shadow:0 -2px 16px #0008;">
+  <footer style="width:100vw;display:flex;justify-content:center;align-items:center;height:80px;background:rgba(18,12,27,0.83)
+  ;z-index:9999;cursor:pointer;box-shadow:0 -2px 16px #0008;">
     <a href="https://www.linkedin.com/in/sudharsan-sarathi/" target="_blank" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;text-decoration:none;">
-      <img src="bottom.png" alt="Sudharsan" style="height:100%;width:auto;max-width:100vw;object-fit:contain;display:block;" />
+      <img src="bottom.png" alt="Sudharsan" style="height:30%;width:auto;max-width:100vw;object-fit:contain;display:block;" />
     </a>
   </footer>
   <div class="toast" id="toast">iframe code copied</div>
