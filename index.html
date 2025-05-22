@@ -487,12 +487,26 @@
       position: relative;
       margin: -40px -20px 20px -20px;
       overflow: hidden;
+      transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .preview-container.expanded {
+      height: 45vh; /* 50% more than original 30vh */
     }
     .preview-iframe {
       width: 100%;
       height: 100%;
       border: none;
       background: #181818;
+      transform-origin: top center;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @media (max-width: 600px) {
+      .preview-iframe {
+        transform: scale(0.85); /* Scale down for mobile */
+      }
+      .preview-container.expanded .preview-iframe {
+        transform: scale(0.85); /* Maintain scale even when expanded */
+      }
     }
     .preview-gradient {
       position: absolute;
@@ -850,6 +864,110 @@
 
     iframeCodeBlock.addEventListener('touchcancel', () => {
       clearTimeout(longPressTimer);
+    });
+
+    // Add preload for sample images
+    function preloadImages() {
+      const sampleImages = [
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2030-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2031-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2032-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2033-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2034-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2036-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2037-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2038-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2040-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2041-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2043-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2045-min%20(1).png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2045-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2046-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2047-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2048-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2049-min.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2050-min.png'
+      ];
+
+      // Create a queue for loading images
+      const imageQueue = [...sampleImages];
+      const maxConcurrent = 3; // Load 3 images at a time
+      let activeLoads = 0;
+
+      function loadNextImage() {
+        if (imageQueue.length === 0 || activeLoads >= maxConcurrent) return;
+
+        const url = imageQueue.shift();
+        activeLoads++;
+
+        const img = new Image();
+        img.onload = img.onerror = () => {
+          activeLoads--;
+          loadNextImage();
+        };
+        img.src = url;
+      }
+
+      // Start loading images
+      for (let i = 0; i < maxConcurrent; i++) {
+        loadNextImage();
+      }
+    }
+
+    // Call preload on page load
+    window.addEventListener('load', preloadImages);
+
+    // Add drag handling for preview container
+    const previewContainer = document.querySelector('.preview-container');
+    let isDraggingPreview = false;
+    let dragStartY = 0;
+    let dragTimeout = null;
+
+    previewContainer.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.preview-iframe')) {
+        isDraggingPreview = true;
+        dragStartY = e.clientY;
+        previewContainer.classList.add('expanded');
+        
+        // Clear any existing timeout
+        if (dragTimeout) {
+          clearTimeout(dragTimeout);
+        }
+      }
+    });
+
+    document.addEventListener('pointermove', (e) => {
+      if (isDraggingPreview) {
+        const deltaY = Math.abs(e.clientY - dragStartY);
+        if (deltaY > 10) { // Only expand if dragged more than 10px
+          previewContainer.classList.add('expanded');
+        }
+      }
+    });
+
+    document.addEventListener('pointerup', () => {
+      if (isDraggingPreview) {
+        isDraggingPreview = false;
+        
+        // Set a timeout to collapse the container
+        dragTimeout = setTimeout(() => {
+          previewContainer.classList.remove('expanded');
+        }, 300); // Small delay before collapsing
+      }
+    });
+
+    document.addEventListener('pointercancel', () => {
+      if (isDraggingPreview) {
+        isDraggingPreview = false;
+        previewContainer.classList.remove('expanded');
+      }
+    });
+
+    // Prevent iframe from capturing pointer events when not dragging
+    previewContainer.addEventListener('pointerleave', () => {
+      if (!isDraggingPreview) {
+        previewContainer.classList.remove('expanded');
+      }
     });
 </script>
 </body>
