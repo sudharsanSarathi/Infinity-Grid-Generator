@@ -26,11 +26,12 @@
       color: #fff;
       font-family: 'MyCustomFont', Arial, sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       box-sizing: border-box;
       transition: background 0.3s;
       position: relative;
       overflow-x: hidden;
+      width: 100%;
     }
     
     @keyframes moveGradient {
@@ -356,7 +357,7 @@
       position: fixed;
       bottom: 0;
       left: 0;
-      width: 100vw;
+    
       display: flex;
       justify-content: center;
       align-items: center;
@@ -482,15 +483,15 @@
       z-index: 9999 !important;
     }
     .preview-container {
-      width: 100vw;
-      height: 30vh;
+      width: 100%;
+      height: 36vh;  /* Increased from 30vh to 36vh (20% more) */
       position: relative;
-      margin: -40px -20px 20px -20px;
+      margin: 0;
       overflow: hidden;
       transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .preview-container.expanded {
-      height: 45vh; /* 50% more than original 30vh */
+      height: 54vh;  /* Increased from 45vh to 54vh (20% more) */
     }
     .preview-iframe {
       width: 100%;
@@ -502,10 +503,10 @@
     }
     @media (max-width: 600px) {
       .preview-iframe {
-        transform: scale(0.85); /* Scale down for mobile */
+        transform: scale(0.85);
       }
       .preview-container.expanded .preview-iframe {
-        transform: scale(0.85); /* Maintain scale even when expanded */
+        transform: scale(0.85);
       }
     }
     .preview-gradient {
@@ -533,7 +534,7 @@
 </head>
 <body>
   <div class="preview-container">
-    <iframe class="preview-iframe" id="top-preview" src="https://sudharsansarathi.github.io/infinity-grid/?images=https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2030-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2031-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2032-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2033-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2034-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2036-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2037-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2038-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2040-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2041-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2043-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2045-min%20(1).png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2045-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2046-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2047-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2048-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2049-min.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2050-min.png&bg=%238bf9f9"></iframe>
+    <iframe class="preview-iframe" id="top-preview" src="https://sudharsansarathi.github.io/infinity-grid/?images=https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2030.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2031.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2032.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2033.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2034.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2035.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2036.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2037.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2038.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2039.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2040.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2041.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2042.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2043.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2044.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2045.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2046.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2047.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2048.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2049.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2050.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2051.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2052.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2053.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2054.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2055.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2056.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2057.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2058.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2059.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2060.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2061.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2062.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2063.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2064.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2065.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2066.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2067.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2068.png,https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2069.png&bg=%238fffff"></iframe>
     <div class="preview-gradient"></div>
   </div>
   <div class="title-svg">
