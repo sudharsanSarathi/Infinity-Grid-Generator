@@ -26,12 +26,11 @@
       color: #fff;
       font-family: 'MyCustomFont', Arial, sans-serif;
       margin: 0;
-      padding: 0;
+      padding: 20px;
       box-sizing: border-box;
       transition: background 0.3s;
       position: relative;
       overflow-x: hidden;
-      width: 100%;
     }
     
     @keyframes moveGradient {
@@ -483,10 +482,10 @@
       z-index: 9999 !important;
     }
     .preview-container {
-      width: 100%;
-      height: 36vh;  /* Increased from 30vh to 36vh (20% more) */
+      width: 100vw;
+      height: 36vh;
       position: relative;
-      margin: 0;
+      margin: -40px -20px 20px -20px;
       overflow: hidden;
       transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -501,14 +500,7 @@
       transform-origin: top center;
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    @media (max-width: 600px) {
-      .preview-iframe {
-        transform: scale(0.85);
-      }
-      .preview-container.expanded .preview-iframe {
-        transform: scale(0.85);
-      }
-    }
+   
     .preview-gradient {
       position: absolute;
       bottom: 0;
@@ -867,32 +859,42 @@
       clearTimeout(longPressTimer);
     });
 
-    // Add preload for sample images
-    function preloadImages() {
-      const sampleImages = [
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2030-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2031-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2032-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2033-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2034-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2036-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2037-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2038-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2040-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2041-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2043-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2045-min%20(1).png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2045-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2046-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2047-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2048-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2049-min.png',
-        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2050-min.png'
+    // Optimize image loading with priority hints and preconnect
+    function optimizeImageLoading() {
+      // Add preconnect for the image domain
+      const preconnectLink = document.createElement('link');
+      preconnectLink.rel = 'preconnect';
+      preconnectLink.href = 'https://ttihvdaqsmhtqyvqxhrb.supabase.co';
+      document.head.appendChild(preconnectLink);
+
+      // Preload critical images
+      const criticalImages = [
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2030.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2031.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2032.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2033.png',
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2034.png'
       ];
 
-      // Create a queue for loading images
-      const imageQueue = [...sampleImages];
-      const maxConcurrent = 3; // Load 3 images at a time
+      criticalImages.forEach(url => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = url;
+        link.fetchPriority = 'high';
+        document.head.appendChild(link);
+      });
+
+      // Load remaining images in background
+      const remainingImages = [
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2035.png',
+        // ... rest of the image URLs ...
+        'https://ttihvdaqsmhtqyvqxhrb.supabase.co/storage/v1/object/public/dog//image%2069.png'
+      ];
+
+      // Create a queue for loading remaining images
+      const imageQueue = [...remainingImages];
+      const maxConcurrent = 4; // Load 4 images at a time
       let activeLoads = 0;
 
       function loadNextImage() {
@@ -909,14 +911,14 @@
         img.src = url;
       }
 
-      // Start loading images
+      // Start loading remaining images
       for (let i = 0; i < maxConcurrent; i++) {
         loadNextImage();
       }
     }
 
-    // Call preload on page load
-    window.addEventListener('load', preloadImages);
+    // Call optimization on page load
+    window.addEventListener('load', optimizeImageLoading);
 
     // Add drag handling for preview container
     const previewContainer = document.querySelector('.preview-container');
