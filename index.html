@@ -577,11 +577,11 @@
       <button class="copy-btn" id="copy-btn">Copy HTML Code</button>
     </div>
   </div>
-  <footer style="width:100vw;display:flex;justify-content:center;align-items:center;height:80px;
-  ;z-index:9999;cursor:pointer;">
-    <a href="https://www.linkedin.com/in/sudharsan-sarathi/" target="_blank" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;text-decoration:none;">
+  <footer style="width:100vw;display:flex;justify-content:center;align-items:center;height:80px;z-index:9999;cursor:pointer;">
+    <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;gap:20px;">
       <img src="bottom.png" alt="Sudharsan" style="height:30%;width:auto;max-width:100vw;object-fit:contain;display:block;" />
-    </a>
+      <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="Uxwireframe" data-color="#FFDD00" data-emoji="☕" data-font="Comic" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff"></script>
+    </div>
   </footer>
   <div class="toast" id="toast">Code copied. Paste into Figma.</div>
   <div class="overlay" id="overlay">
@@ -596,6 +596,13 @@
       <button class="close-btn" id="close-tip-overlay">×</button>
       <div class="overlay-title">How to get a Google Drive image URL</div>
       <iframe class="vimeo-player" src="https://player.vimeo.com/video/76979871?h=8272103f6e" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+  <div class="overlay" id="copy-overlay">
+    <div class="overlay-content">
+      <button class="close-btn" id="close-copy-overlay">×</button>
+      <div class="overlay-title">Copied! Just paste it in Figma. Watch the video below to see how.</div>
+      <iframe class="vimeo-player" src="https://player.vimeo.com/video/1086986165?h=8272103f6e" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
     </div>
   </div>
 <script>
@@ -621,6 +628,13 @@
     const gridPreviewTitle = document.getElementById('grid-preview-title');
     const iframePreview = document.getElementById('iframe-preview');
     const infinityGridContainer = document.getElementById('infinity-grid-container');
+    const copyOverlay = document.getElementById('copy-overlay');
+    const closeCopyOverlay = document.getElementById('close-copy-overlay');
+    const previewContainer = document.querySelector('.preview-container');
+    let isDraggingPreview = false;
+    let dragStartY = 0;
+    let dragTimeout = null;
+    let longPressTimer;
 
     function renderUrls() {
       urlList.innerHTML = '';
@@ -760,12 +774,100 @@
       copyBtn.classList.remove('copied');
     }
 
-    copyBtn.onclick = () => {
+    function handleCopy() {
       navigator.clipboard.writeText(iframeCodeBlock.textContent);
       copyBtn.innerHTML = 'Code Copied ✅';
       copyBtn.classList.add('copied');
-      showToast('iframe code copied');
+      showToast('Code copied. Paste into Figma.');
+      copyOverlay.classList.add('show');
+    }
+
+    copyBtn.onclick = handleCopy;
+    iframeCodeBlock.onclick = handleCopy;
+
+    // Close copy overlay
+    closeCopyOverlay.onclick = () => {
+      copyOverlay.classList.remove('show');
     };
+    copyOverlay.addEventListener('click', (e) => {
+      if (e.target === copyOverlay) {
+        copyOverlay.classList.remove('show');
+      }
+    });
+
+    // Update long press handler
+    iframeCodeBlock.addEventListener('mousedown', () => {
+      longPressTimer = setTimeout(handleCopy, 500);
+    });
+
+    iframeCodeBlock.addEventListener('mouseup', () => {
+      clearTimeout(longPressTimer);
+    });
+
+    iframeCodeBlock.addEventListener('mouseleave', () => {
+      clearTimeout(longPressTimer);
+    });
+
+    // Update touch events for mobile
+    iframeCodeBlock.addEventListener('touchstart', () => {
+      longPressTimer = setTimeout(handleCopy, 500);
+    });
+
+    iframeCodeBlock.addEventListener('touchend', () => {
+      clearTimeout(longPressTimer);
+    });
+
+    iframeCodeBlock.addEventListener('touchcancel', () => {
+      clearTimeout(longPressTimer);
+    });
+
+    // Add drag handling for preview container
+    previewContainer.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.preview-iframe')) {
+        isDraggingPreview = true;
+        dragStartY = e.clientY;
+        previewContainer.classList.add('expanded');
+        
+        // Clear any existing timeout
+        if (dragTimeout) {
+          clearTimeout(dragTimeout);
+        }
+      }
+    });
+
+    document.addEventListener('pointermove', (e) => {
+      if (isDraggingPreview) {
+        const deltaY = Math.abs(e.clientY - dragStartY);
+        if (deltaY > 10) { // Only expand if dragged more than 10px
+          previewContainer.classList.add('expanded');
+        }
+      }
+    });
+
+    document.addEventListener('pointerup', () => {
+      if (isDraggingPreview) {
+        isDraggingPreview = false;
+        
+        // Set a timeout to collapse the container
+        dragTimeout = setTimeout(() => {
+          previewContainer.classList.remove('expanded');
+        }, 300); // Small delay before collapsing
+      }
+    });
+
+    document.addEventListener('pointercancel', () => {
+      if (isDraggingPreview) {
+        isDraggingPreview = false;
+        previewContainer.classList.remove('expanded');
+      }
+    });
+
+    // Prevent iframe from capturing pointer events when not dragging
+    previewContainer.addEventListener('pointerleave', () => {
+      if (!isDraggingPreview) {
+        previewContainer.classList.remove('expanded');
+      }
+    });
 
     // Overlay logic
     instructionBtn.onclick = () => {
@@ -791,72 +893,6 @@
       if (e.target === tipOverlay) {
         tipOverlay.classList.remove('show');
       }
-    });
-
-    // Drag-to-scroll for grid
-    let isDragging = false, startX, startY, scrollLeft, scrollTop;
-    infinityGridContainer.addEventListener('pointerdown', (e) => {
-      isDragging = true;
-      infinityGridContainer.setPointerCapture(e.pointerId);
-      startX = e.clientX;
-      startY = e.clientY;
-      scrollLeft = infinityGridContainer.scrollLeft;
-      scrollTop = infinityGridContainer.scrollTop;
-      infinityGridContainer.style.cursor = 'grabbing';
-    });
-    infinityGridContainer.addEventListener('pointermove', (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      infinityGridContainer.scrollLeft = scrollLeft - dx;
-      infinityGridContainer.scrollTop = scrollTop - dy;
-    });
-    infinityGridContainer.addEventListener('pointerup', (e) => {
-      isDragging = false;
-      infinityGridContainer.releasePointerCapture(e.pointerId);
-      infinityGridContainer.style.cursor = 'grab';
-    });
-    infinityGridContainer.addEventListener('pointerleave', (e) => {
-      isDragging = false;
-      infinityGridContainer.style.cursor = 'grab';
-    });
-
-    // Add copy functionality for iframe code block
-    iframeCodeBlock.addEventListener('click', () => {
-      navigator.clipboard.writeText(iframeCodeBlock.textContent);
-      showToast('iframe code copied');
-    });
-
-    let longPressTimer;
-    iframeCodeBlock.addEventListener('mousedown', () => {
-      longPressTimer = setTimeout(() => {
-        navigator.clipboard.writeText(iframeCodeBlock.textContent);
-        showToast('iframe code copied');
-      }, 500);
-    });
-
-    iframeCodeBlock.addEventListener('mouseup', () => {
-      clearTimeout(longPressTimer);
-    });
-
-    iframeCodeBlock.addEventListener('mouseleave', () => {
-      clearTimeout(longPressTimer);
-    });
-
-    // Touch events for mobile
-    iframeCodeBlock.addEventListener('touchstart', () => {
-      longPressTimer = setTimeout(() => {
-        navigator.clipboard.writeText(iframeCodeBlock.textContent);
-        showToast('iframe code copied');
-      }, 500);
-    });
-
-    iframeCodeBlock.addEventListener('touchend', () => {
-      clearTimeout(longPressTimer);
-    });
-
-    iframeCodeBlock.addEventListener('touchcancel', () => {
-      clearTimeout(longPressTimer);
     });
 
     // Optimize image loading with priority hints and preconnect
@@ -919,59 +955,6 @@
 
     // Call optimization on page load
     window.addEventListener('load', optimizeImageLoading);
-
-    // Add drag handling for preview container
-    const previewContainer = document.querySelector('.preview-container');
-    let isDraggingPreview = false;
-    let dragStartY = 0;
-    let dragTimeout = null;
-
-    previewContainer.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('.preview-iframe')) {
-        isDraggingPreview = true;
-        dragStartY = e.clientY;
-        previewContainer.classList.add('expanded');
-        
-        // Clear any existing timeout
-        if (dragTimeout) {
-          clearTimeout(dragTimeout);
-        }
-      }
-    });
-
-    document.addEventListener('pointermove', (e) => {
-      if (isDraggingPreview) {
-        const deltaY = Math.abs(e.clientY - dragStartY);
-        if (deltaY > 10) { // Only expand if dragged more than 10px
-          previewContainer.classList.add('expanded');
-        }
-      }
-    });
-
-    document.addEventListener('pointerup', () => {
-      if (isDraggingPreview) {
-        isDraggingPreview = false;
-        
-        // Set a timeout to collapse the container
-        dragTimeout = setTimeout(() => {
-          previewContainer.classList.remove('expanded');
-        }, 300); // Small delay before collapsing
-      }
-    });
-
-    document.addEventListener('pointercancel', () => {
-      if (isDraggingPreview) {
-        isDraggingPreview = false;
-        previewContainer.classList.remove('expanded');
-      }
-    });
-
-    // Prevent iframe from capturing pointer events when not dragging
-    previewContainer.addEventListener('pointerleave', () => {
-      if (!isDraggingPreview) {
-        previewContainer.classList.remove('expanded');
-      }
-    });
 </script>
 </body>
 </html> 
